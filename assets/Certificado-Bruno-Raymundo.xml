@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<certificado>
+    <cabecalho>
+        <instituicao>C. E. Sandra Roldan Barboza</instituicao>
+        <codigo>CER-BRUNO-2026-0001</codigo>
+        <data_emissao>2026-08-17</data_emissao>
+    </cabecalho>
+    <aluno>
+        <nome>Bruno Cerqueira Raymundo Filho</nome>
+        <cpf>184.704.047-09</cpf>
+        <rg>27.329.852-1</rg>
+        <nascimento>04/04/1999</nascimento>
+        <mae>Lucimar Augusta Carreto Pinto</mae>
+        <pai>Bruno Cerqueira Raymundo</pai>
+    </aluno>
+    <curso>
+        <nome>Ensino Médio Completo</nome>
+        <data_conclusao>22/12/2022</data_conclusao>
+    </curso>
+</certificado>
