@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de Certificados - C. E. Sandra Roldan Barboza</title>
+    <meta name="description" content="Sistema oficial de verificação de autenticidade de certificados escolares do C. E. Sandra Roldan Barboza.">
+
+    <!-- Fontes (Raiwind fallback para Segoe UI / Roboto) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================================
+           RESET BÁSICO
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ============================================================
+           TOKENS / DESIGN SYSTEM (Gov.RJ)
+           ============================================================ */
+        :root {
+            --gradiente-principal: linear-gradient(135deg, #22314C 0%, #4B3075 100%);
+            --cor-fundo: #FFFFFF;
+            --cor-azul-escuro: #22314C;
+            --cor-roxo-escuro: #4B3075;
+            --cor-cinza-claro: #D4D4D4;
+            --cor-cinza-hover: #C0C0C0;
+            --cor-texto: #333333;
+            --cor-texto-secundario: #666666;
+            --cor-texto-input: #1F2937;
+            --cor-borda-input: #D1D5DB;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-erro-fundo: #FEEBEE;
+            --cor-erro-texto: #D32F2F;
+            --cor-sucesso-fundo: #E8F5E9;
+            --cor-sucesso-texto: #2E7D32;
+            --sombra-card: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --raio-card: 8px;
+            --transicao: all 0.25s ease-in-out;
+        }
+
+        /* ============================================================
+           BASE
+           ============================================================ */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Raiwind', 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ============================================================
+           CABEÇALHO (HEADER)
+           ============================================================ */
+        header {
+            background: var(--gradiente-principal);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-esquerda {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .header-logo {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-titulo {
+            color: #FFFFFF;
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.2;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-direita {
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: right;
+            opacity: 0.95;
+        }
+
+        .header-direita .selo {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        .header-direita .selo::before {
+            content: "✓";
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #FFFFFF;
+            color: var(--cor-roxo-escuro);
+            border-radius: 50%;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* ============================================================
+           CORPO (MAIN)
+           ============================================================ */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 50px 20px;
+            background-color: var(--cor-fundo);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #FFFFFF;
+            border-radius: var(--raio-card);
+            box-shadow: var(--sombra-card);
+            padding: 48px 56px;
+            border-top: 4px solid transparent;
+            border-image: linear-gradient(90deg, #4B3075, #22314C) 1;
+        }
+
+        /* ============================================================
+           TÍTULOS
+           ============================================================ */
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 600;
+            color: #22314C;
+            line-height: 1.3;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--cor-azul-escuro);
+            line-height: 1.3;
+        }
+
+        .titulo-secao {
+            color: var(--cor-roxo-escuro);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--cor-cinza-claro);
+        }
+
+        /* ============================================================
+           TELA 1 - CONSULTA
+           ============================================================ */
+        .tela {
+            display: none;
+        }
+
+        .tela.ativa {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cabecalho-consulta {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .cabecalho-consulta .icone-selo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: var(--gradiente-principal);
+            border-radius: 50%;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(75, 48, 117, 0.3);
+        }
+
+        .cabecalho-consulta h1 {
+            margin-bottom: 12px;
+        }
+
+        .cabecalho-consulta .subtitulo {
+            color: var(--cor-texto-secundario);
+            font-size: 1rem;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ============================================================
+           FORMULÁRIO
+           ============================================================ */
+        .grupo-form {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--cor-roxo-escuro);
+            margin-bottom: 6px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            height: 52px;
+            padding: 0 18px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: var(--cor-texto-input);
+            background: #FFFFFF;
+            border: 2px solid var(--cor-borda-input);
+            border-radius: 8px;
+            transition: var(--transicao);
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--cor-roxo-escuro);
+            box-shadow: 0 0 0 3px rgba(75, 48, 117, 0.15);
+        }
+
+        input[type="text"]::placeholder {
+            color: #999999;
+        }
+
+        /* ============================================================
+           BOTÕES
+           ============================================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            height: 52px;
+            padding: 0 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transicao);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            min-width: 180px;
+        }
+
+        .btn-primary {
+            background: var(--gradiente-principal);
+            color: #FFFFFF;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            transition: var(--transicao);
+        }
+
+        .btn-primary:hover::before {
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(75, 48, 117, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--cor-cinza-claro);
+            color: var(--cor-roxo-escuro);
+        }
+
+        .btn-secondary:hover {
+            background: var(--cor-cinza-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-bloco {
+            width: 100%;
+        }
+
+        /* ============================================================
+           SPINNER (Carregamento)
+           ============================================================ */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            border-top-color: #FFFFFF;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ============================================================
+           MENSAGENS (Erro / Sucesso)
+           ============================================================ */
+        .mensagem {
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-top: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mensagem.ativa {
+            display: flex;
+            animation: slideDown 0.3s ease-in-out;
+        }
+
+        .mensagem-erro {
+            background: var(--cor-erro-fundo);
+            color: var(--cor-erro-texto);
+            border: 1px solid rgba(211, 47, 47, 0.2);
+        }
+
+        .mensagem-sucesso {
+            background: var(--cor-sucesso-fundo);
+            color: var(--cor-sucesso-texto);
+            border: 1px solid rgba(46, 125, 50, 0.2);
+        }
+
+        .mensagem-icone {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* ============================================================
+           TELA 2 - RESULTADO
+           ============================================================ */
+        .selo-valido {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background: var(--cor-sucesso-fundo);
+            color: var(--cor-sucesso-texto);
+            padding: 20px 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(46, 125, 50, 0.25);
+        }
+
+        .selo-valido .check-grande {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: var(--cor-sucesso-texto);
+            color: #FFFFFF;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .selo-valido .texto-valido {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .selo-valido .sub-valido {
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+
+        /* Grid de dados do aluno */
+        .dados-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .dado-item {
+            background: #F8F9FA;
+            border-left: 4px solid var(--cor-roxo-escuro);
+            padding: 16px 20px;
+            border-radius: 6px;
+            transition: var(--transicao);
+        }
+
+        .dado-item:hover {
+            background: #F0F1F3;
+            transform: translateX(3px);
+        }
+
+        .dado-item .dado-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--cor-roxo-escuro);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .dado-item .dado-valor {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--cor-texto);
+        }
+
+        .dado-item.destaque {
+            grid-column: 1 / -1;
+            background: var(--gradiente-principal);
+        }
+
+        .dado-item.destaque .dado-label {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .dado-item.destaque .dado-valor {
+            color: #FFFFFF;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .dado-item.destaque:hover {
+            background: var(--gradiente-principal);
+            transform: translateX(3px);
+        }
+
+        /* Grupo de botões de ação */
+        .acoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .acoes .btn {
+            height: 48px;
+            padding: 0 24px;
+            min-width: 180px;
+        }
+
+        /* ============================================================
+           RODAPÉ (FOOTER)
+           ============================================================ */
+        footer {
+            background: var(--gradiente-principal);
+            color: #FFFFFF;
+            text-align: center;
+            padding: 24px 30px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            line-height: 1.6;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        footer p {
+            opacity: 0.95;
+        }
+
+        /* ============================================================
+           RESPONSIVIDADE (Mobile First - Breakpoints)
+           ============================================================ */
+
+        /* Tablet (até 768px) */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+
+            .header-esquerda {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header-titulo {
+                font-size: 1.4rem;
+            }
+
+            .card {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .dados-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .acoes {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .acoes .btn {
+                width: 100%;
+            }
+        }
+
+        /* Mobile (até 480px) */
+        @media (max-width: 480px) {
+            main {
+                padding: 25px 15px;
+            }
+
+            .card {
+                padding: 25px 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            input[type="text"],
+            .btn {
+                width: 100%;
+            }
+
+            .cabecalho-consulta .icone-selo {
+                width: 56px;
+                height: 56px;
+                font-size: 1.6rem;
+            }
+
+            .cabecalho-consulta .subtitulo {
+                font-size: 0.95rem;
+            }
+
+            .header-logo {
+                height: 48px;
+            }
+
+            .header-titulo {
+                font-size: 1.2rem;
+            }
+
+            .selo-valido {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .selo-valido .texto-valido {
+                font-size: 1.1rem;
+            }
+
+            .dado-item {
+                padding: 14px 16px;
+            }
+
+            .dado-item .dado-valor {
+                font-size: 1rem;
+            }
+
+            footer {
+                font-size: 0.82rem;
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+         CABEÇALHO (HEADER)
+         ============================================================ -->
+    <header>
+        <div class="header-esquerda">
+            <img src="assets/Logo-Gov.png" alt="Brasão do Governo do Estado do Rio de Janeiro" class="header-logo">
+            <div class="header-titulo">C. E. Sandra Roldan Barboza</div>
+        </div>
+        <div class="header-direita">
+            <span class="selo">Sistema de Verificação Oficial</span>
+        </div>
+    </header>
+
+    <!-- ============================================================
+         CORPO (MAIN)
+         ============================================================ -->
+    <main>
+        <div class="container">
+            <div class="card">
+
+                <!-- ====================================================
+                     TELA 1 - CONSULTA DE AUTENTICIDADE
+                     ==================================================== -->
+                <section class="tela ativa" id="tela-consulta" aria-label="Consulta de Autenticidade">
+                    <div class="cabecalho-consulta">
+                        <div class="icone-selo" aria-hidden="true">✓</div>
+                        <h1>Valide seu Certificado Escolar</h1>
+                        <p class="subtitulo">
+                            Insira o código de autenticação impresso no seu certificado para verificar a validade.
+                        </p>
+                    </div>
+
+                    <form id="form-consulta" novalidate>
+                        <div class="grupo-form">
+                            <label for="codigo-certificado">Código de Autenticação</label>
+                            <input
+                                type="text"
+                                id="codigo-certificado"
+                                name="codigo-certificado"
+                                placeholder="Digite o código do seu certificado"
+                                autocomplete="off"
+                                required
+                                aria-describedby="area-mensagem"
+                            >
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-bloco" id="btn-consultar">
+                            <span class="texto-btn">CONSULTAR</span>
+                        </button>
+
+                        <!-- Área de mensagens (aria-live para acessibilidade) -->
+                        <div class="mensagem mensagem-erro" id="mensagem-erro" aria-live="polite" role="alert">
+                            <span class="mensagem-icone" aria-hidden="true">⚠</span>
+                            <span class="mensagem-texto">Código não encontrado. Verifique o número digitado.</span>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- ====================================================
+                     TELA 2 - DADOS DO ALUNO + AÇÕES
+                     ==================================================== -->
+                <section class="tela" id="tela-resultado" aria-label="Resultado da Verificação">
+                    <!-- Selo de documento válido -->
+                    <div class="selo-valido">
+                        <div class="check-grande" aria-hidden="true">✓</div>
+                        <div>
+                            <div class="texto-valido">🔒 Documento Válido</div>
+                            <div class="sub-valido">A autenticidade deste certificado foi confirmada.</div>
+                        </div>
+                    </div>
+
+                    <h2 class="titulo-secao">Dados do Aluno</h2>
+
+                    <!-- Grid de dados chave/valor -->
+                    <div class="dados-grid">
+                        <div class="dado-item destaque">
+                            <div class="dado-label">Nome Completo</div>
+                            <div class="dado-valor" id="dado-nome">—</div>
+                        </div>
+                        <div class="dado-item">
+                            <div class="dado-label">RG</div>
+                            <div class="dado-valor" id="dado-rg">—</div>
+                        </div>
+                        <div class="dado-item">
+                            <div class="dado-label">CPF</div>
+                            <div class="dado-valor" id="dado-cpf">—</div>
+                        </div>
+                        <div class="dado-item">
+                            <div class="dado-label">Nome da Mãe</div>
+                            <div class="dado-valor" id="dado-mae">—</div>
+                        </div>
+                        <div class="dado-item">
+                            <div class="dado-label">Nome do Pai</div>
+                            <div class="dado-valor" id="dado-pai">—</div>
+                        </div>
+                        <div class="dado-item">
+                            <div class="dado-label">Data de Nascimento</div>
+                            <div class="dado-valor" id="dado-nascimento">—</div>
+                        </div>
+                        <div class="dado-item">
+                            <div class="dado-label">Curso</div>
+                            <div class="dado-valor" id="dado-curso">—</div>
+                        </div>
+                        <div class="dado-item">
+                            <div class="dado-label">Data de Conclusão</div>
+                            <div class="dado-valor" id="dado-conclusao">—</div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de ação -->
+                    <div class="acoes">
+                        <!-- 1. VISUALIZAR PDF -->
+                        <button class="btn btn-primary" id="btn-visualizar-pdf">
+                            <span aria-hidden="true">👁</span> VISUALIZAR PDF
+                        </button>
+
+                        <!-- 2. BAIXAR PDF -->
+                        <button class="btn btn-primary" id="btn-baixar-pdf">
+                            <span aria-hidden="true">⬇</span> BAIXAR PDF
+                        </button>
+
+                        <!-- 3. BAIXAR XML -->
+                        <button class="btn btn-secondary" id="btn-baixar-xml">
+                            <span aria-hidden="true">⬇</span> BAIXAR XML
+                        </button>
+
+                        <!-- 4. VOLTAR -->
+                        <button class="btn btn-secondary" id="btn-voltar">
+                            <span aria-hidden="true">←</span> VOLTAR
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================================
+         RODAPÉ (FOOTER)
+         ============================================================ -->
+    <footer>
+        <p>© 2026 C. E. Sandra Roldan Barboza - Todos os direitos reservados. Documento gerado eletronicamente.</p>
+    </footer>
+
+    <!-- ============================================================
+         JAVASCRIPT
+         ============================================================ -->
+    <script>
+        /* ============================================================
+           BANCO DE DADOS (ÚNICO REGISTRO VÁLIDO)
+           ============================================================ */
+        const database = {
+            "CER-BRUNO-2022-1999": {
+                nome: "Bruno Cerqueira Raymundo Filho",
+                cpf: "184.704.047-09",
+                rg: "27.329.852-1",
+                nascimento: "04/04/1999",
+                pai: "Bruno Cerqueira Raymundo",
+                mae: "Lucimar Augusta Carreto Pinto",
+                curso: "Ensino Médio Completo",
+                data_conclusao: "22/12/2022"
+            }
+        };
+
+        /* Caminho do PDF do certificado */
+        const PDF_PATH = "assets/CER-BRUNO-2022-1999.pdf";
+
+        /* ============================================================
+           VERIFICAÇÃO DE QR CODE (parâmetro na URL)
+           ============================================================ */
+        // Verifica se veio por QR code (parâmetro ?qr=true ou ?code=...)
+        const urlParams = new URLSearchParams(window.location.search);
+        const qrCode = urlParams.get('qr');
+        const qrCodeValue = urlParams.get('code');
+
+        // Se veio por QR code com código válido, preenche e consulta automaticamente
+        if (qrCode === 'true' && qrCodeValue && database[qrCodeValue]) {
+            // Aguarda o DOM carregar completamente
+            document.addEventListener('DOMContentLoaded', function() {
+                inputCodigo.value = qrCodeValue;
+                // Simula o submit do formulário
+                formConsulta.dispatchEvent(new Event('submit'));
+            });
+        }
+
+        /* ============================================================
+           SELEÇÃO DE ELEMENTOS DO DOM
+           ============================================================ */
+        const formConsulta = document.getElementById("form-consulta");
+        const inputCodigo = document.getElementById("codigo-certificado");
+        const btnConsultar = document.getElementById("btn-consultar");
+        const mensagemErro = document.getElementById("mensagem-erro");
+
+        const telaConsulta = document.getElementById("tela-consulta");
+        const telaResultado = document.getElementById("tela-resultado");
+
+        const btnVisualizarPdf = document.getElementById("btn-visualizar-pdf");
+        const btnBaixarPdf = document.getElementById("btn-baixar-pdf");
+        const btnBaixarXml = document.getElementById("btn-baixar-xml");
+        const btnVoltar = document.getElementById("btn-voltar");
+
+        /* ============================================================
+           FUNÇÕES UTILITÁRIAS
+           ============================================================ */
+
+        /* Exibe mensagem de erro */
+        function mostrarErro() {
+            mensagemErro.classList.add("ativa");
+        }
+
+        /* Oculta mensagem de erro */
+        function ocultarErro() {
+            mensagemErro.classList.remove("ativa");
+        }
+
+        /* Alterna estado de carregamento do botão Consultar */
+        function setCarregando(carregando) {
+            if (carregando) {
+                btnConsultar.disabled = true;
+                btnConsultar.innerHTML = '<span class="spinner"></span> CONSULTANDO...';
+            } else {
+                btnConsultar.disabled = false;
+                btnConsultar.innerHTML = '<span class="texto-btn">CONSULTAR</span>';
+            }
+        }
+
+        /* Troca de tela com animação fade-in */
+        function trocarTela(deTela, paraTela) {
+            deTela.classList.remove("ativa");
+            deTela.style.display = "none";
+            paraTela.style.display = "block";
+            /* Força reflow para reiniciar a animação */
+            void paraTela.offsetWidth;
+            paraTela.classList.add("ativa");
+        }
+
+        /* Preenche os dados do aluno na Tela 2 */
+        function preencherDados(aluno) {
+            document.getElementById("dado-nome").textContent = aluno.nome;
+            document.getElementById("dado-rg").textContent = aluno.rg;
+            document.getElementById("dado-cpf").textContent = aluno.cpf;
+            document.getElementById("dado-mae").textContent = aluno.mae;
+            document.getElementById("dado-pai").textContent = aluno.pai;
+            document.getElementById("dado-nascimento").textContent = aluno.nascimento;
+            document.getElementById("dado-curso").textContent = aluno.curso;
+            document.getElementById("dado-conclusao").textContent = aluno.data_conclusao;
+        }
+
+        /* ============================================================
+           EVENTO: SUBMIT DO FORMULÁRIO (CONSULTA)
+           ============================================================ */
+        formConsulta.addEventListener("submit", function (e) {
+            e.preventDefault();
+            ocultarErro();
+
+            const codigo = inputCodigo.value.trim();
+
+            /* Validação: campo vazio */
+            if (codigo === "") {
+                mostrarErro();
+                return;
+            }
+
+            /* Inicia estado de carregamento (simula rede por 1s) */
+            setCarregando(true);
+
+            setTimeout(function () {
+                /* Verifica se o código existe no banco de dados */
+                if (database[codigo]) {
+                    const aluno = database[codigo];
+                    preencherDados(aluno);
+                    trocarTela(telaConsulta, telaResultado);
+                    /* Rola para o topo para visualizar o resultado */
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                } else {
+                    /* Código inválido */
+                    mostrarErro();
+                }
+                setCarregando(false);
+            }, 1000);
+        });
+
+        /* Limpa mensagem de erro ao digitar */
+        inputCodigo.addEventListener("input", function () {
+            ocultarErro();
+        });
+
+        /* ============================================================
+           AÇÃO 1: VISUALIZAR PDF (nova aba)
+           ============================================================ */
+        btnVisualizarPdf.addEventListener("click", function () {
+            window.open(PDF_PATH, "_blank");
+        });
+
+        /* ============================================================
+           AÇÃO 2: BAIXAR PDF
+           ============================================================ */
+        btnBaixarPdf.addEventListener("click", function () {
+            const link = document.createElement("a");
+            link.href = PDF_PATH;
+            link.download = "Certificado-Bruno-Raymundo.pdf";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        /* ============================================================
+           AÇÃO 3: BAIXAR XML (gerado dinamicamente)
+           ============================================================ */
+        btnBaixarXml.addEventListener("click", function () {
+            const aluno = database["CER-BRUNO-2022-1999"];
+
+            /* Data de emissão no formato ISO (YYYY-MM-DD) */
+            const dataEmissao = new Date().toISOString().split("T")[0];
+
+            /* Construção do XML conforme especificação */
+            const xmlContent =
+                '<?xml version="1.0" encoding="UTF-8"?>\n' +
+                '<certificado>\n' +
+                '    <cabecalho>\n' +
+                '        <instituicao>C. E. Sandra Roldan Barboza</instituicao>\n' +
+                '        <codigo>CER-BRUNO-2026-0001</codigo>\n' +
+                '        <data_emissao>' + dataEmissao + '</data_emissao>\n' +
+                '    </cabecalho>\n' +
+                '    <aluno>\n' +
+                '        <nome>' + aluno.nome + '</nome>\n' +
+                '        <cpf>' + aluno.cpf + '</cpf>\n' +
+                '        <rg>' + aluno.rg + '</rg>\n' +
+                '        <nascimento>' + aluno.nascimento + '</nascimento>\n' +
+                '        <mae>' + aluno.mae + '</mae>\n' +
+                '        <pai>' + aluno.pai + '</pai>\n' +
+                '    </aluno>\n' +
+                '    <curso>\n' +
+                '        <nome>' + aluno.curso + '</nome>\n' +
+                '        <data_conclusao>' + aluno.data_conclusao + '</data_conclusao>\n' +
+                '    </curso>\n' +
+                '</certificado>';
+
+            /* Cria Blob e dispara o download */
+            const blob = new Blob([xmlContent], { type: "application/xml" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "Certificado-Bruno-Raymundo.xml";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
+
+        /* ============================================================
+           AÇÃO 4: VOLTAR (reseta e retorna à Tela 1)
+           ============================================================ */
+        btnVoltar.addEventListener("click", function () {
+            inputCodigo.value = "";
+            ocultarErro();
+            trocarTela(telaResultado, telaConsulta);
+            inputCodigo.focus();
+        });
+    </script>
+</body>
+</html>
